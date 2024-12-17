@@ -1,251 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, Modal, TextField, Box } from "@mui/material";
+import {
+  Button,
+  Modal,
+  TextField,
+  Box,
+  MenuItem,
+  Select,
+  InputLabel,
+} from "@mui/material";
 import { Add, Edit, Delete } from "@mui/icons-material";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CustomPagination from "../Components/CustomPagination";
+import * as XLSX from "xlsx";
 
 const initialRows = [
   {
     id: 1,
-    Brand: " RCW 750 ML",
+    Brand: "RCW 750 ML",
     OB: 30,
     PROD: 95796767,
     DESP: 353543,
     CB: 45756756,
   },
-  {
-    id: 2,
-    Brand: " RCW 750 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 3,
-    Brand: "MRW 750 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 4,
-    Brand: "MRW 350 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 5,
-    Brand: "MRW 180 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 6,
-    Brand: "MRW 2L",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 7,
-    Brand: "RCW 750 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 8,
-    Brand: "RCW 180 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 9,
-    Brand: "RCW 375 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 10,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 11,
-    Brand: "SRW 750 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 12,
-    Brand: "SRW 375 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 13,
-    Brand: "SRW 500 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 14,
-    Brand: "SRW 2 L",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 15,
-    Brand: "RCAP 750 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 16,
-    Brand: "RCAP 350 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 17,
-    Brand: "RCAP 400 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 18,
-    Brand: "RCAP 500 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 19,
-    Brand: "RCAP 1 L",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 20,
-    Brand: "RCAP 5L",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 21,
-    Brand: "NO 1 CB RUM 750 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 22,
-    Brand: "NO 1 CB RUM 1000 ML",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 23,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 24,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 25,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 26,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 27,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 28,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 29,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
-  {
-    id: 30,
-    Brand: "Royal Stag",
-    OB: 304534,
-    PROD: "j434344",
-    DESP: 3535434343,
-    CB: 457567563434,
-  },
 ];
+
+const statesList = ["Punjab", "Haryana", "Himachal", "Rajasthan", "Chandigarh"];
 
 export default function CrudDataTable() {
   const [rows, setRows] = useState(initialRows);
@@ -264,17 +45,19 @@ export default function CrudDataTable() {
     page: 0,
     pageSize: 10,
   });
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setPaginationModel((prev) => {
-        const nextPage = prev.page + 1; // Go to the next page
+        const nextPage = prev.page + 1;
         const totalPages = Math.ceil(rows.length / prev.pageSize);
-        return { ...prev, page: nextPage >= totalPages ? 0 : nextPage }; // Reset to first page if at the end
+        return { ...prev, page: nextPage >= totalPages ? 0 : nextPage };
       });
-    }, 30000); // 30 seconds
+    }, 30000);
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
+    return () => clearInterval(interval);
   }, [rows]);
 
   const handleDelete = (id) => {
@@ -309,13 +92,35 @@ export default function CrudDataTable() {
     setOpenModal(false);
   };
 
+  const handleExportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, "DataEntry.xlsx");
+  };
+
+  const handleStateChange = (event) => {
+    setSelectedState(event.target.value);
+  };
+
+  const calculateTotal = () => {
+    const totalOB = rows.reduce((acc, row) => acc + Number(row.OB || 0), 0);
+    const totalPROD = rows.reduce((acc, row) => acc + Number(row.PROD || 0), 0);
+    const totalDESP = rows.reduce((acc, row) => acc + Number(row.DESP || 0), 0);
+    const totalCB = rows.reduce((acc, row) => acc + Number(row.CB || 0), 0);
+
+    return {
+      id: "Total",
+      Brand: "Total",
+      OB: totalOB,
+      PROD: totalPROD,
+      DESP: totalDESP,
+      CB: totalCB,
+    };
+  };
+
   const columns = [
-    {
-      field: "id",
-      headerName: "ID",
-      width: 50,
-      headerClassName: "header-id",
-    },
+    { field: "id", headerName: "ID", width: 50, headerClassName: "header-id" },
     {
       field: "Brand",
       headerName: "Brand",
@@ -350,21 +155,22 @@ export default function CrudDataTable() {
       field: "actions",
       headerName: "Actions",
       width: 300,
-      headerClassName: "header-prod",
-      renderCell: (params) => (
-        <>
-          <Button startIcon={<Edit />} onClick={() => handleEdit(params.row)}>
-            Edit
-          </Button>
-          <Button
-            startIcon={<Delete />}
-            color="error"
-            onClick={() => handleDelete(params.row.id)}
-          >
-            Delete
-          </Button>
-        </>
-      ),
+      headerClassName: "header-actions",
+      renderCell: (params) =>
+        params.row.id !== "Total" && (
+          <>
+            <Button startIcon={<Edit />} onClick={() => handleEdit(params.row)}>
+              Edit
+            </Button>
+            <Button
+              startIcon={<Delete />}
+              color="error"
+              onClick={() => handleDelete(params.row.id)}
+            >
+              Delete
+            </Button>
+          </>
+        ),
     },
   ];
 
@@ -374,6 +180,8 @@ export default function CrudDataTable() {
     )
   );
 
+  const rowsWithTotal = [...filteredRows, calculateTotal()];
+
   return (
     <>
       <Box
@@ -381,36 +189,93 @@ export default function CrudDataTable() {
         justifyContent="space-between"
         alignItems="center"
         marginBottom={2}
-        marginRight={2}
       >
         <TextField
           label="Search"
           variant="outlined"
           onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ width: "30%", marginLeft: "2%" }}
-          InputProps={{
-            style: {
-              height: "45px",
-              padding: "4px 8px",
-            },
-          }}
+          style={{ width: "20%" }}
         />
-
-        <Button
-          startIcon={<Add />}
-          onClick={handleAdd}
-          variant="contained"
-          color="primary"
+        <Select
+          value={selectedState}
+          onChange={handleStateChange}
+          displayEmpty
+          style={{ width: "20%", height: "50px" }}
         >
-          Add New
-        </Button>
+          <MenuItem value="" disabled>
+            Select a State
+          </MenuItem>
+          {statesList.map((state, index) => (
+            <MenuItem key={index} value={state}>
+              {state}
+            </MenuItem>
+          ))}
+        </Select>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Select Date"
+            value={selectedDate}
+            onChange={(newValue) => setSelectedDate(newValue)}
+            renderInput={(params) => (
+              <TextField {...params} style={{ width: "20%" }} />
+            )}
+          />
+        </LocalizationProvider>
+        <div>
+          <Button
+            startIcon={<Add />}
+            onClick={handleAdd}
+            variant="contained"
+            color="primary"
+            style={{ marginRight: "10px" }}
+          >
+            Add New
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleExportToExcel}
+          >
+            Export to Excel
+          </Button>
+        </div>
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        marginBottom={2}
+      >
+        {(selectedState || selectedDate) && (
+          <h3
+            style={{
+              fontWeight: "bold", // Makes the text bold
+              color: "#007BFF", // Changes the text color
+              fontSize: "40px", // Adjusted to take less space
+              margin: 0, // Removes default margin
+              padding: "4px 0", // Adds minimal padding
+            }}
+          >
+            {selectedState}
+            {selectedDate && (
+              <span
+                style={{
+                  fontWeight: "normal",
+                  color: "#007BFF",
+                  marginLeft: "10px",
+                }}
+              >
+                ({selectedDate.format("DD/MM/YYYY")})
+              </span>
+            )}
+          </h3>
+        )}
       </Box>
       <div style={{ height: 600, width: "100%" }}>
         <DataGrid
-          rows={filteredRows}
+          rows={rowsWithTotal}
           columns={columns}
           pageSize={10}
-          pageSizeOptions={[10]}
           paginationModel={paginationModel}
           onPaginationModelChange={(model) => setPaginationModel(model)}
           pagination
@@ -418,16 +283,16 @@ export default function CrudDataTable() {
             pagination: CustomPagination,
           }}
           sx={{
-            "& .header-id": { backgroundColor: "#e0f7fa", color: "#000" },
-            "& .header-brand": { backgroundColor: "#faf9cf", color: "#000" },
-            "& .header-ob": { backgroundColor: "#c8e6c9", color: "#000" },
+            "& .header-id": { backgroundColor: "#d9f5fc", color: "#000" },
+            "& .header-brand": { backgroundColor: "#d9f5fc", color: "#000" },
+            "& .header-ob": { backgroundColor: "#d9f5fc", color: "#000" },
             "& .header-prod": { backgroundColor: "#d9f5fc", color: "#000" },
-            "& .header-desp": { backgroundColor: "#f3ebf7", color: "#000" },
-            "& .header-cb": { backgroundColor: "#ffe4cf", color: "#000" },
+            "& .header-desp": { backgroundColor: "#d9f5fc", color: "#000" },
+            "& .header-cb": { backgroundColor: "#d9f5fc", color: "#000" },
+            "& .header-actions": { backgroundColor: "#d9f5fc", color: "#000" },
           }}
         />
       </div>
-
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <Box
           sx={{
@@ -439,7 +304,6 @@ export default function CrudDataTable() {
           }}
         >
           <h2>{editingRow ? "Edit Data" : "Add Data"}</h2>
-
           <TextField
             fullWidth
             label="Brand"
@@ -458,6 +322,7 @@ export default function CrudDataTable() {
           <TextField
             fullWidth
             label="PROD"
+            type="number"
             value={newRow.PROD}
             onChange={(e) => setNewRow({ ...newRow, PROD: e.target.value })}
             margin="normal"
@@ -478,15 +343,14 @@ export default function CrudDataTable() {
             onChange={(e) => setNewRow({ ...newRow, CB: e.target.value })}
             margin="normal"
           />
-
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            color="primary"
-            fullWidth
-          >
-            Save
-          </Button>
+          <Box display="flex" justifyContent="space-between" mt={2}>
+            <Button variant="contained" onClick={handleSave}>
+              Save
+            </Button>
+            <Button variant="outlined" onClick={() => setOpenModal(false)}>
+              Cancel
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </>
