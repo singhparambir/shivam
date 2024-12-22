@@ -14,21 +14,24 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CustomPagination from "../Components/CustomPagination";
 import * as XLSX from "xlsx";
-
-const initialRows = [
-  {
-    id: 1,
-    Brand: "RCW 750 ML",
-    OB: 30,
-    PROD: 95796767,
-    DESP: 353543,
-    CB: 45756756,
-  },
-];
+import { useNavigate } from "react-router-dom"; 
 
 const statesList = ["Punjab", "Haryana", "Himachal", "Rajasthan", "Chandigarh"];
 
 export default function CrudDataTable() {
+  // Load rows from localStorage or use initialRows if none found
+  const storedData = localStorage.getItem("tableData");
+  const initialRows = storedData ? JSON.parse(storedData) : [
+    {
+      id: 1,
+      Brand: "RCW 750 ML",
+      OB: 30,
+      PROD: 95796767,
+      DESP: 353543,
+      CB: 45756756,
+    },
+  ];
+
   const [rows, setRows] = useState(initialRows);
   const [openModal, setOpenModal] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
@@ -47,17 +50,15 @@ export default function CrudDataTable() {
   });
   const [selectedState, setSelectedState] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+  const navigate = useNavigate(); 
 
+  const handlePageChange = (page) => {
+    navigate(`/page${page}`); 
+  };
+
+  // Save rows to localStorage whenever rows change
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPaginationModel((prev) => {
-        const nextPage = prev.page + 1;
-        const totalPages = Math.ceil(rows.length / prev.pageSize);
-        return { ...prev, page: nextPage >= totalPages ? 0 : nextPage };
-      });
-    }, 30000);
-
-    return () => clearInterval(interval);
+    localStorage.setItem("tableData", JSON.stringify(rows));
   }, [rows]);
 
   const handleDelete = (id) => {
@@ -249,11 +250,11 @@ export default function CrudDataTable() {
         {(selectedState || selectedDate) && (
           <h3
             style={{
-              fontWeight: "bold", // Makes the text bold
-              color: "#007BFF", // Changes the text color
-              fontSize: "40px", // Adjusted to take less space
-              margin: 0, // Removes default margin
-              padding: "4px 0", // Adds minimal padding
+              fontWeight: "bold",
+              color: "#007BFF",
+              fontSize: "40px",
+              margin: 0,
+              padding: "4px 0",
             }}
           >
             {selectedState}
@@ -282,14 +283,8 @@ export default function CrudDataTable() {
           slots={{
             pagination: CustomPagination,
           }}
-          sx={{
-            "& .header-id": { backgroundColor: "#d9f5fc", color: "#000" },
-            "& .header-brand": { backgroundColor: "#d9f5fc", color: "#000" },
-            "& .header-ob": { backgroundColor: "#d9f5fc", color: "#000" },
-            "& .header-prod": { backgroundColor: "#d9f5fc", color: "#000" },
-            "& .header-desp": { backgroundColor: "#d9f5fc", color: "#000" },
-            "& .header-cb": { backgroundColor: "#d9f5fc", color: "#000" },
-            "& .header-actions": { backgroundColor: "#d9f5fc", color: "#000" },
+          getRowClassName={(params) => {
+            return params.row.id === "Total" ? "total-row" : ''; 
           }}
         />
       </div>

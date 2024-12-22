@@ -15,6 +15,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
+
 const drawerWidth = 240;
 const navItems = ["Cart"];
 
@@ -28,8 +29,8 @@ function Navbar(props) {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
-        e-commerce
+      <Typography variant="h6" sx={{ my: 2 }}>.
+        e-commerce  
       </Typography>
       <Divider />
       <List>
@@ -65,7 +66,7 @@ function Navbar(props) {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           >
-              {/* Chandigarh Distillers & Bottlers Ltd.{" "} */}
+              Chandigarh Distillers & Bottlers Ltd.{" "}
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {/* <Button sx={{ color: "#fff" }}> Cart</Button> */}
