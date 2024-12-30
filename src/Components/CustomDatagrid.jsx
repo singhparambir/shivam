@@ -3,8 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import CustomPagination from './CustomPagination'; // Make sure this path is correct
 
 const CustomDataGrid = ({ rows, columns, paginationModel, setPaginationModel }) => {
-    console.log(rows);
-    console.log(columns);
+  
 
   return (
     <DataGrid
