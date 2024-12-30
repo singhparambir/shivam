@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { DataGrid } from "@mui/x-data-grid";
 import {
   Button,
   Modal,
@@ -7,14 +6,13 @@ import {
   Box,
   MenuItem,
   Select,
-  InputLabel,
 } from "@mui/material";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import CustomPagination from "../Components/CustomPagination";
 import * as XLSX from "xlsx";
-import { useNavigate } from "react-router-dom"; 
+import CustomDataGrid from "../Components/CustomDatagrid"; // Import the CustomDataGrid component
+import { Link } from "react-router-dom";
 
 const statesList = ["Punjab", "Haryana", "Himachal", "Rajasthan", "Chandigarh"];
 
@@ -22,16 +20,9 @@ export default function CrudDataTable() {
   // Load rows from localStorage or use initialRows if none found
   const storedData = localStorage.getItem("tableData");
   const initialRows = storedData ? JSON.parse(storedData) : [
-    {
-      id: 1,
-      Brand: "RCW 750 ML",
-      OB: 30,
-      PROD: 95796767,
-      DESP: 353543,
-      CB: 45756756,
-    },
+  
   ];
-
+ const [city,setCity] = useState("");
   const [rows, setRows] = useState(initialRows);
   const [openModal, setOpenModal] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
@@ -50,11 +41,28 @@ export default function CrudDataTable() {
   });
   const [selectedState, setSelectedState] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
-  const navigate = useNavigate(); 
+  const [data,setData] = useState([{
+    "id": 1,
+    "Brand": "dfygdsufgf",
+    "OB": "2334",
+    "PROD": "78787",
+    "DESP": "78787",
+    "CB": "78787"
+}]);
+  // ethe useEffect banauna hai .
+  useEffect(() => {
+    const temp =  localStorage.getItem("selectedState")
+    if(temp){
+      console.log(temp);
+      
+    }
+    else{
+      console.log("yo yo ");
+      
+    }
+  }, [selectedState]); 
 
-  const handlePageChange = (page) => {
-    navigate(`/page${page}`); 
-  };
+
 
   // Save rows to localStorage whenever rows change
   useEffect(() => {
@@ -105,6 +113,7 @@ export default function CrudDataTable() {
   };
 
   const calculateTotal = () => {
+    console.log(rows,"hello rows");
     const totalOB = rows.reduce((acc, row) => acc + Number(row.OB || 0), 0);
     const totalPROD = rows.reduce((acc, row) => acc + Number(row.PROD || 0), 0);
     const totalDESP = rows.reduce((acc, row) => acc + Number(row.DESP || 0), 0);
@@ -121,42 +130,16 @@ export default function CrudDataTable() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 50, headerClassName: "header-id" },
-    {
-      field: "Brand",
-      headerName: "Brand",
-      width: 300,
-      headerClassName: "header-brand",
-    },
-    {
-      field: "OB",
-      headerName: "OB",
-      width: 270,
-      headerClassName: "header-ob",
-    },
-    {
-      field: "PROD",
-      headerName: "PROD",
-      width: 270,
-      headerClassName: "header-prod",
-    },
-    {
-      field: "DESP",
-      headerName: "DESP",
-      width: 270,
-      headerClassName: "header-desp",
-    },
-    {
-      field: "CB",
-      headerName: "CB",
-      width: 270,
-      headerClassName: "header-cb",
-    },
+    { field: "id", headerName: "ID", width: 50 },
+    { field: "Brand", headerName: "Brand", width: 300 },
+    { field: "OB", headerName: "OB", width: 270 },
+    { field: "PROD", headerName: "PROD", width: 270 },
+    { field: "DESP", headerName: "DESP", width: 270 },
+    { field: "CB", headerName: "CB", width: 270 },
     {
       field: "actions",
       headerName: "Actions",
       width: 300,
-      headerClassName: "header-actions",
       renderCell: (params) =>
         params.row.id !== "Total" && (
           <>
@@ -272,21 +255,15 @@ export default function CrudDataTable() {
           </h3>
         )}
       </Box>
-      <div style={{ height: 600, width: "100%" }}>
-        <DataGrid
-          rows={rowsWithTotal}
+      <Link to="/two"> <button>second</button></Link>
+      <div style={{ height: 1000, width: "100%" }}>
+        <CustomDataGrid
+          rows={data}
           columns={columns}
-          pageSize={10}
           paginationModel={paginationModel}
-          onPaginationModelChange={(model) => setPaginationModel(model)}
-          pagination
-          slots={{
-            pagination: CustomPagination,
-          }}
-          getRowClassName={(params) => {
-            return params.row.id === "Total" ? "total-row" : ''; 
-          }}
+          setPaginationModel={setPaginationModel}
         />
+
       </div>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <Box
@@ -298,6 +275,7 @@ export default function CrudDataTable() {
             width: 400,
           }}
         >
+          
           <h2>{editingRow ? "Edit Data" : "Add Data"}</h2>
           <TextField
             fullWidth
