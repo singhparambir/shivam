@@ -12,20 +12,37 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import * as XLSX from "xlsx";
 import CustomDataGrid from "../Components/CustomDatagrid"; // Import the CustomDataGrid component
-import { Link } from "react-router-dom";
 
 const statesList = ["Punjab", "Haryana", "Himachal", "Rajasthan", "Chandigarh"];
 
 export default function CrudDataTable() {
   // Load rows from localStorage or use initialRows if none found
-  const storedData = localStorage.getItem("tableData");
-  const initialRows = storedData ? JSON.parse(storedData) : [
-  
-  ];
+ 
+
  const [city,setCity] = useState("");
-  const [rows, setRows] = useState(initialRows);
+  const [rows, setRows] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
+  let [filteredRows,setFilteredRows]= useState([])
+  const [countdown, setCountdown] = useState(60); // Timer countdown in seconds
+
+
+   // Save rows to localStorage whenever rows change
+   useEffect(() => {
+    localStorage.setItem(`${selectedState}`, JSON.stringify(rows));
+  }, [rows]);
+  useEffect(() => {
+    console.log("hihih");
+    
+    const storedData = localStorage.getItem(`${selectedState}`);
+    setRows( storedData ? JSON.parse(storedData) : [
+ 
+    ]);
+
+ }, [selectedState]); 
+  
   const [newRow, setNewRow] = useState({
     id: "",
     Brand: "",
@@ -39,35 +56,7 @@ export default function CrudDataTable() {
     page: 0,
     pageSize: 10,
   });
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [data,setData] = useState([{
-    "id": 1,
-    "Brand": "dfygdsufgf",
-    "OB": "2334",
-    "PROD": "78787",
-    "DESP": "78787",
-    "CB": "78787"
-}]);
-  // ethe useEffect banauna hai .
-  useEffect(() => {
-    const temp =  localStorage.getItem("selectedState")
-    if(temp){
-      console.log(temp);
-      
-    }
-    else{
-      console.log("yo yo ");
-      
-    }
-  }, [selectedState]); 
-
-
-
-  // Save rows to localStorage whenever rows change
-  useEffect(() => {
-    localStorage.setItem("tableData", JSON.stringify(rows));
-  }, [rows]);
+ 
 
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
@@ -113,11 +102,11 @@ export default function CrudDataTable() {
   };
 
   const calculateTotal = () => {
-    console.log(rows,"hello rows");
-    const totalOB = rows.reduce((acc, row) => acc + Number(row.OB || 0), 0);
-    const totalPROD = rows.reduce((acc, row) => acc + Number(row.PROD || 0), 0);
-    const totalDESP = rows.reduce((acc, row) => acc + Number(row.DESP || 0), 0);
-    const totalCB = rows.reduce((acc, row) => acc + Number(row.CB || 0), 0);
+    // console.log(rows,"hello rows");
+    const totalOB = rows?.reduce((acc, row) => acc + Number(row.OB || 0), 0);
+    const totalPROD = rows?.reduce((acc, row) => acc + Number(row.PROD || 0), 0);
+    const totalDESP = rows?.reduce((acc, row) => acc + Number(row.DESP || 0), 0);
+    const totalCB = rows?.reduce((acc, row) => acc + Number(row.CB || 0), 0);
 
     return {
       id: "Total",
@@ -158,13 +147,37 @@ export default function CrudDataTable() {
     },
   ];
 
-  const filteredRows = rows.filter((row) =>
-    Object.values(row).some((value) =>
-      String(value).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
+ 
+
+  useEffect(()=>{
+    setFilteredRows(rows?.filter((row) =>
+      Object.values(row).some((value) =>
+        String(value).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    ))
+  },[rows])
+
 
   const rowsWithTotal = [...filteredRows, calculateTotal()];
+
+  // Timer and state switching logic
+  useEffect(() => {
+    const stateCycle = ["Punjab", "Haryana", "Himachal", "Rajasthan", "Chandigarh"];
+    let currentStateIndex = 0;
+
+    const intervalId = setInterval(() => {
+      if (countdown === 0) {
+        // Switch to the next state when the countdown reaches 0
+        setSelectedState(stateCycle[currentStateIndex]);
+        currentStateIndex = (currentStateIndex + 1) % stateCycle.length;
+        setCountdown(60); // Reset the countdown to 60 seconds
+      } else {
+        setCountdown((prevCountdown) => prevCountdown - 1); // Decrease the countdown
+      }
+    }, 1000); // 1000 ms = 1 second
+
+    return () => clearInterval(intervalId); // Clean up the interval on unmount
+  }, [countdown]);
 
   return (
     <>
@@ -206,7 +219,7 @@ export default function CrudDataTable() {
           />
         </LocalizationProvider>
         <div>
-          <Button
+          {selectedState != ""?<Button
             startIcon={<Add />}
             onClick={handleAdd}
             variant="contained"
@@ -214,14 +227,14 @@ export default function CrudDataTable() {
             style={{ marginRight: "10px" }}
           >
             Add New
-          </Button>
-          <Button
+          </Button>:null}
+          {selectedState != ""?<Button
             variant="contained"
             color="secondary"
             onClick={handleExportToExcel}
           >
             Export to Excel
-          </Button>
+          </Button>:null}
         </div>
       </Box>
       <Box
@@ -254,15 +267,124 @@ export default function CrudDataTable() {
             )}
           </h3>
         )}
+                <p style={{ fontSize: "20px" }}>Time left: {countdown} seconds</p>
+
       </Box>
-      <Link to="/two"> <button>second</button></Link>
+      <div>
+  <button
+    onClick={() => setSelectedState("Punjab")}
+    style={{
+      backgroundColor: "#4CAF50",
+      color: "white",
+      padding: "10px 20px",
+      margin: "5px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontSize: "16px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      transition: "background-color 0.3s, transform 0.2s",
+    }}
+    onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+    onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
+    onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
+    onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
+  >
+    Punjab
+  </button>
+  <button
+    onClick={() => setSelectedState("Haryana")}
+    style={{
+      backgroundColor: "#4CAF50",
+      color: "white",
+      padding: "10px 20px",
+      margin: "5px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontSize: "16px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      transition: "background-color 0.3s, transform 0.2s",
+    }}
+    onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+    onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
+    onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
+    onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
+  >
+    Haryana
+  </button>
+  <button
+    onClick={() => setSelectedState("Himachal")}
+    style={{
+      backgroundColor: "#4CAF50",
+      color: "white",
+      padding: "10px 20px",
+      margin: "5px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontSize: "16px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      transition: "background-color 0.3s, transform 0.2s",
+    }}
+    onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+    onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
+    onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
+    onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
+  >
+    Himachal
+  </button>
+  <button
+    onClick={() => setSelectedState("Rajasthan")}
+    style={{
+      backgroundColor: "#4CAF50",
+      color: "white",
+      padding: "10px 20px",
+      margin: "5px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontSize: "16px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      transition: "background-color 0.3s, transform 0.2s",
+    }}
+    onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+    onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
+    onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
+    onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
+  >
+    Rajasthan
+  </button>
+  <button
+    onClick={() => setSelectedState("Chandigarh")}
+    style={{
+      backgroundColor: "#4CAF50",
+      color: "white",
+      padding: "10px 20px",
+      margin: "5px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontSize: "16px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      transition: "background-color 0.3s, transform 0.2s",
+    }}
+    onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+    onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
+    onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
+    onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
+  >
+    Chandigarh
+  </button>
+</div>
+
       <div style={{ height: 1000, width: "100%" }}>
-        <CustomDataGrid
-          rows={data}
+        {selectedState != "" ?<CustomDataGrid
+          rows={rowsWithTotal}
           columns={columns}
           paginationModel={paginationModel}
           setPaginationModel={setPaginationModel}
-        />
+        />:null}
 
       </div>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
