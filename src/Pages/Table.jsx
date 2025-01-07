@@ -12,6 +12,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import * as XLSX from "xlsx";
 import CustomDataGrid from "../Components/CustomDatagrid"; // Import the CustomDataGrid component
+import { useNavigate } from "react-router-dom";
 
 const statesList = ["Punjab", "Haryana", "Himachal", "Rajasthan", "Chandigarh"];
 
@@ -26,8 +27,8 @@ export default function CrudDataTable() {
   const [selectedState, setSelectedState] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   let [filteredRows,setFilteredRows]= useState([])
-  const [countdown, setCountdown] = useState(60); // Timer countdown in seconds
-
+  const [countdown, setCountdown] = useState(5); // Timer countdown in seconds
+const navigate = useNavigate();
 
    // Save rows to localStorage whenever rows change
    useEffect(() => {
@@ -170,7 +171,7 @@ export default function CrudDataTable() {
         // Switch to the next state when the countdown reaches 0
         setSelectedState(stateCycle[currentStateIndex]);
         currentStateIndex = (currentStateIndex + 1) % stateCycle.length;
-        setCountdown(60); // Reset the countdown to 60 seconds
+        setCountdown(5); // Reset the countdown to 60 seconds
       } else {
         setCountdown((prevCountdown) => prevCountdown - 1); // Decrease the countdown
       }
@@ -272,7 +273,7 @@ export default function CrudDataTable() {
       </Box>
       <div>
   <button
-    onClick={() => setSelectedState("Punjab")}
+    onClick={() => navigate('/two')}
     style={{
       backgroundColor: "#4CAF50",
       color: "white",
@@ -290,10 +291,30 @@ export default function CrudDataTable() {
     onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
     onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
   >
-    Punjab
+F.G stock 2  </button>
+  <button
+    onClick={() => navigate('/three')}
+    style={{
+      backgroundColor: "#4CAF50",
+      color: "white",
+      padding: "10px 20px",
+      margin: "5px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontSize: "16px",
+      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+      transition: "background-color 0.3s, transform 0.2s",
+    }}
+    onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
+    onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
+    onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
+    onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
+  >
+    Line Wise
   </button>
   <button
-    onClick={() => setSelectedState("Haryana")}
+    onClick={() => navigate('/four')}
     style={{
       backgroundColor: "#4CAF50",
       color: "white",
@@ -311,29 +332,7 @@ export default function CrudDataTable() {
     onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
     onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
   >
-    Haryana
-  </button>
-  <button
-    onClick={() => setSelectedState("Himachal")}
-    style={{
-      backgroundColor: "#4CAF50",
-      color: "white",
-      padding: "10px 20px",
-      margin: "5px",
-      border: "none",
-      borderRadius: "8px",
-      cursor: "pointer",
-      fontSize: "16px",
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      transition: "background-color 0.3s, transform 0.2s",
-    }}
-    onMouseOver={(e) => (e.target.style.backgroundColor = "#45a049")}
-    onMouseOut={(e) => (e.target.style.backgroundColor = "#4CAF50")}
-    onMouseDown={(e) => (e.target.style.transform = "scale(0.95)")}
-    onMouseUp={(e) => (e.target.style.transform = "scale(1)")}
-  >
-    Himachal
-  </button>
+Hourly Production  </button>
   <button
     onClick={() => setSelectedState("Rajasthan")}
     style={{

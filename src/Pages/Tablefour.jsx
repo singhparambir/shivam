@@ -3,37 +3,41 @@ import CustomDataGrid from '../Components/CustomDatagrid'; // Import your Custom
 import { Button, Modal, TextField, Box } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 
-function Tabletwo() {
+function Tablefour() {
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
   });
 
-  const [rows, setRows] = useState(() =>{
-    const storedData = localStorage.getItem('productQuantities');
-  
-      return storedData? JSON.parse(storedData):'';
-    
-    
+  const [rows, setRows] = useState(() => {
+    const storedData = localStorage.getItem('tablefour');
+    return storedData ? JSON.parse(storedData) : [];
   });
 
   const [openModal, setOpenModal] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
   const [newRow, setNewRow] = useState({
     id: '',
+    time: '',
+    lineno: '',
     brand: '',
-    '750ML': '',
-    '375ML': '',
-    '180ML': '',
-    '2LTR': '',
+    state: '',
+    batchno: '',
+    sku: '',
+    qtyInClass: '',
+    remarks: '',
   });
 
   const columns = [
-    { field: 'brand', headerName: 'BRAND', width: 200 },
-    { field: '750ML', headerName: '750ML', width: 150 },
-    { field: '375ML', headerName: '375ML', width: 150 },
-    { field: '180ML', headerName: '180ML', width: 150 },
-    { field: '2LTR', headerName: '2LTR', width: 150 },
+    { field: 'time', headerName: 'Time', width: 150 },
+    { field: 'lineno', headerName: 'Line No', width: 150 },
+    { field: 'brand', headerName: 'Brand', width: 150 },
+    { field: 'state', headerName: 'State', width: 150 },
+    { field: 'batchno', headerName: 'Batch No', width: 150 },
+    { field: 'sku', headerName: 'SKU', width: 150 },
+    { field: 'qtyInClass', headerName: 'QTY in Class', width: 150 },
+    { field: 'remarks', headerName: 'Remarks', width: 200 },
+
     {
       field: 'actions',
       headerName: 'Actions',
@@ -55,24 +59,22 @@ function Tabletwo() {
     },
   ];
 
-  // Load data from localStorage on component mount
-  useEffect(() => {
-   
-  }, []);
-
   // Save data to localStorage whenever rows change
   useEffect(() => {
-    localStorage.setItem('productQuantities', JSON.stringify(rows));
+    localStorage.setItem('tablefour', JSON.stringify(rows));
   }, [rows]);
 
   const handleAdd = () => {
     setNewRow({
       id: Date.now(), // Unique ID for each row
+      time: '',
+      lineno: '',
       brand: '',
-      '750ML': '',
-      '375ML': '',
-      '180ML': '',
-      '2LTR': '',
+      state: '',
+      batchno: '',
+      sku: '',
+      qtyInClass: '',
+      remarks: '',
     });
     setEditingRow(null);
     setOpenModal(true);
@@ -99,7 +101,7 @@ function Tabletwo() {
 
   return (
     <div>
-      <h1>Product Quantities Table</h1>
+      <h1>Production Schedule</h1>
       <Button
         startIcon={<Add />}
         onClick={handleAdd}
@@ -132,6 +134,20 @@ function Tabletwo() {
           <h2>{editingRow ? 'Edit Data' : 'Add Data'}</h2>
           <TextField
             fullWidth
+            label="Time"
+            value={newRow.time}
+            onChange={(e) => setNewRow({ ...newRow, time: e.target.value })}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Line No"
+            value={newRow.lineno}
+            onChange={(e) => setNewRow({ ...newRow, lineno: e.target.value })}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
             label="Brand"
             value={newRow.brand}
             onChange={(e) => setNewRow({ ...newRow, brand: e.target.value })}
@@ -139,42 +155,37 @@ function Tabletwo() {
           />
           <TextField
             fullWidth
-            label="750ML"
-            type="number"
-            value={newRow['750ML']}
-            onChange={(e) =>
-              setNewRow({ ...newRow, '750ML': e.target.value })
-            }
+            label="State"
+            value={newRow.state}
+            onChange={(e) => setNewRow({ ...newRow, state: e.target.value })}
             margin="normal"
           />
           <TextField
             fullWidth
-            label="375ML"
-            type="number"
-            value={newRow['375ML']}
-            onChange={(e) =>
-              setNewRow({ ...newRow, '375ML': e.target.value })
-            }
+            label="Batch No"
+            value={newRow.batchno}
+            onChange={(e) => setNewRow({ ...newRow, batchno: e.target.value })}
             margin="normal"
           />
           <TextField
             fullWidth
-            label="180ML"
-            type="number"
-            value={newRow['180ML']}
-            onChange={(e) =>
-              setNewRow({ ...newRow, '180ML': e.target.value })
-            }
+            label="SKU"
+            value={newRow.sku}
+            onChange={(e) => setNewRow({ ...newRow, sku: e.target.value })}
             margin="normal"
           />
           <TextField
             fullWidth
-            label="2LTR"
-            type="number"
-            value={newRow['2LTR']}
-            onChange={(e) =>
-              setNewRow({ ...newRow, '2LTR': e.target.value })
-            }
+            label="QTY in Class"
+            value={newRow.qtyInClass}
+            onChange={(e) => setNewRow({ ...newRow, qtyInClass: e.target.value })}
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Remarks"
+            value={newRow.remarks}
+            onChange={(e) => setNewRow({ ...newRow, remarks: e.target.value })}
             margin="normal"
           />
           <Box display="flex" justifyContent="space-between" mt={2}>
@@ -191,4 +202,4 @@ function Tabletwo() {
   );
 }
 
-export default Tabletwo;
+export default Tablefour;
