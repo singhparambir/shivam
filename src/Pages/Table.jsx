@@ -20,7 +20,10 @@ export default function CrudDataTable() {
   // Load rows from localStorage or use initialRows if none found
  
 
+ 
+
  const [city,setCity] = useState("");
+  const [rows, setRows] = useState([]);
   const [rows, setRows] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
@@ -57,6 +60,7 @@ const navigate = useNavigate();
     page: 0,
     pageSize: 10,
   });
+ 
  
 
   const handleDelete = (id) => {
@@ -108,6 +112,11 @@ const navigate = useNavigate();
     const totalPROD = rows?.reduce((acc, row) => acc + Number(row.PROD || 0), 0);
     const totalDESP = rows?.reduce((acc, row) => acc + Number(row.DESP || 0), 0);
     const totalCB = rows?.reduce((acc, row) => acc + Number(row.CB || 0), 0);
+    // console.log(rows,"hello rows");
+    const totalOB = rows?.reduce((acc, row) => acc + Number(row.OB || 0), 0);
+    const totalPROD = rows?.reduce((acc, row) => acc + Number(row.PROD || 0), 0);
+    const totalDESP = rows?.reduce((acc, row) => acc + Number(row.DESP || 0), 0);
+    const totalCB = rows?.reduce((acc, row) => acc + Number(row.CB || 0), 0);
 
     return {
       id: "Total",
@@ -147,6 +156,16 @@ const navigate = useNavigate();
         ),
     },
   ];
+
+ 
+
+  useEffect(()=>{
+    setFilteredRows(rows?.filter((row) =>
+      Object.values(row).some((value) =>
+        String(value).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    ))
+  },[rows])
 
  
 
@@ -221,6 +240,7 @@ const navigate = useNavigate();
         </LocalizationProvider>
         <div>
           {selectedState != ""?<Button
+          {selectedState != ""?<Button
             startIcon={<Add />}
             onClick={handleAdd}
             variant="contained"
@@ -230,11 +250,14 @@ const navigate = useNavigate();
             Add New
           </Button>:null}
           {selectedState != ""?<Button
+          </Button>:null}
+          {selectedState != ""?<Button
             variant="contained"
             color="secondary"
             onClick={handleExportToExcel}
           >
             Export to Excel
+          </Button>:null}
           </Button>:null}
         </div>
       </Box>
@@ -380,9 +403,12 @@ Hourly Production  </button>
       <div style={{ height: 1000, width: "100%" }}>
         {selectedState != "" ?<CustomDataGrid
           rows={rowsWithTotal}
+        {selectedState != "" ?<CustomDataGrid
+          rows={rowsWithTotal}
           columns={columns}
           paginationModel={paginationModel}
           setPaginationModel={setPaginationModel}
+        />:null}
         />:null}
 
       </div>
